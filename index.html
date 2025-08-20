@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Letter Reader</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-top: 0;
+            color: #1a73e8;
+        }
+        p {
+            font-size: 1.1em;
+            color: #555;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            resize: none; /* Disables resizing of the textarea */
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 5px rgba(26, 115, 232, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Real-time Letter Reader</h1>
+        <p>Type in the box below, and your browser will read each character aloud.</p>
+        <textarea id="text-input" placeholder="Start typing here..."></textarea>
+    </div>
+
+    <script>
+        // Get the textarea element from the document
+        const inputArea = document.getElementById('text-input');
+
+        // Check if the browser supports the Web Speech API
+        if ('speechSynthesis' in window) {
+            
+            // Add an event listener that fires whenever a key is pressed down
+            inputArea.addEventListener('keydown', function(event) {
+                // The 'event.key' property gives us the character of the key pressed
+                const keyTyped = event.key;
+
+                // We only want to speak single characters, not keys like "Shift", "Backspace", "Enter", etc.
+                // A simple way to filter is to check if the key's length is 1.
+                if (keyTyped.length === 1) {
+                    
+                    // Create a new speech synthesis utterance object
+                    // This object contains the text to be spoken and settings like voice, rate, pitch.
+                    const utterance = new SpeechSynthesisUtterance(keyTyped);
+
+                    // Optional: Customize the speech speed (rate). 1 is default.
+                    utterance.lang="en-US";
+                    utterance.rate = 1.5; 
+                    utterance.pitch=2;
+
+                    // Use the browser's speech synthesis engine to speak the utterance
+                    window.speechSynthesis.speak(utterance);
+                    inputArea.value="";
+                }
+            });
+
+        } else {
+            // If the browser doesn't support the API, inform the user.
+            alert("Sorry, your browser does not support the Web Speech API. Please try Chrome, Firefox, or Edge.");
+            inputArea.disabled = true;
+        }
+    </script>
+
+</body>
+</html>
